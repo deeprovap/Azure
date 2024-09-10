@@ -10,24 +10,55 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'  # Ensure you're using Python 3.x
+stages:
+  # Stage 1: Build Stage
+  - stage: Build
+    displayName: 'Build Stage'
+    jobs:
+    - job: BuildJob
+      displayName: 'Run Python Script in Build'
+      steps:
+      # Step 1: Set up Python version
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.x'
+        displayName: 'Set up Python 3.x'
 
-- script: |
-    python file.py
-  displayName: 'Run Python Script'
+      # Step 2: Run Python script
+      - script: |
+          python file.py
+        displayName: 'Run Python Script'
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/file1.zip'
-    replaceExistingArchive: true
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'file1'
-    publishLocation: 'Container'
+      # Step 3: Publish the Python script as a build artifact
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: 'app.py'
+          artifactName: 'python-app-script'
+        displayName: 'Publish Python Script as Build Artifact'
+
+  # Stage 2: Deploy Stage (Deploy to Azure App Service)
+  - stage: Deploy
+    displayName: 'Deploy Stage'
+    dependsOn: Build  # This stage runs after the build stage is complete
+    jobs:
+    - job: DeployJob
+      displayName: 'Deploy to Azure App Service'
+      steps:
+      # Step 1: Download the build artifact
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'python-app-script'
+          downloadPath: '$(System.ArtifactsDirectory)'
+        displayName: 'Download Build Artifact'
+
+      # Step 2: Deploy to Azure App Service
+      - task: AzureWebApp@1
+        inputs:
+          appType : "webapp"
+          azureSubscription: 'Webapp connection'  # Azure service connection name
+          appName: 'MyAzurething'  # Name of the Web App in Azure
+          package: '$(System.ArtifactsDirectory)/app.py'
+        displayName: 'Deploy Python Script to Azure App Service'
+
