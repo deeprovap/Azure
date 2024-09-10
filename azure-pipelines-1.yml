@@ -26,6 +26,7 @@ stages:
 
       # Step 2: Run Python script
       - script: |
+          pwd
           python file.py
         displayName: 'Run Python Script'
 
