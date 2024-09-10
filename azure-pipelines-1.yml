@@ -32,7 +32,7 @@ stages:
       # Step 3: Publish the Python script as a build artifact
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: 'app.py'
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'python-app-script'
         displayName: 'Publish Python Script as Build Artifact'
 
@@ -59,6 +59,6 @@ stages:
           appType : "webapp"
           azureSubscription: 'Webapp connection'  # Azure service connection name
           appName: 'MyAzurething'  # Name of the Web App in Azure
-          package: '$(System.ArtifactsDirectory)/app.py'
+          package: '$(System.ArtifactsDirectory)'
         displayName: 'Deploy Python Script to Azure App Service'
 
