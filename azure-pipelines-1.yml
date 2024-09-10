@@ -28,13 +28,14 @@ stages:
       - script: |
           pwd
           python file.py
+          cp file.py -rf $(Build.ArtifactStagingDirectory)
           
         displayName: 'Run Python Script'
 
       # Step 3: Publish the Python script as a build artifact
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(Build.SourcesDirectory)'
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'python-app-script'
           targetPath: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Publish Python Script as Build Artifact'
