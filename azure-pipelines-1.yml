@@ -28,13 +28,15 @@ stages:
       - script: |
           pwd
           python file.py
+          
         displayName: 'Run Python Script'
 
       # Step 3: Publish the Python script as a build artifact
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          pathToPublish: '$(Build.SourcesDirectory)'
           artifactName: 'python-app-script'
+          targetPath: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Publish Python Script as Build Artifact'
 
   # Stage 2: Deploy Stage (Deploy to Azure App Service)
