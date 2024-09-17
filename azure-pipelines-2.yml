@@ -1,0 +1,48 @@
+trigger:
+- main  # Trigger on main branch
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  pythonVersion: '3.x'
+
+stages:
+  - stage: Build
+    jobs:
+    - job: RunPythonScript
+      displayName: 'Run Python Script'
+      steps:
+      # Step 1: Checkout the code
+      - checkout: self
+
+      # Step 2: Set up Python
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '$(pythonVersion)'
+          addToPath: true
+        displayName: 'Set up Python $(pythonVersion)'
+
+      # Step 4: Run the Python script
+      - script: |
+          python file.py
+        displayName: 'Run Python Script'
+
+      # Step 5: Archive the output
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: 'output.txt'
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/output.zip'
+          includeRootFolder: false
+        displayName: 'Archive output'
+
+      # Step 6: Upload the file to Azure Blob Storage
+      - task: AzureFileCopy@6
+        inputs:
+          SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'
+          azureSubscription: 'Webapp connection'
+          Destination: 'AzureBlob'
+          storage: 'myazurethingblob01'
+          ContainerName: 'myazurethingcontainer01'
+        displayName: 'copying to Blob'
