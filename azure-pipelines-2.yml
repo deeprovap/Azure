@@ -40,7 +40,7 @@ stages:
       # Step 6: Upload the file to Azure Blob Storage
       - task: AzureCLI@2
         inputs:
-          azureSubscription: 'Webapp connection'
+          azureSubscription: 'Blob'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
           inlineScript: |
