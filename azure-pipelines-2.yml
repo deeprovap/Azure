@@ -46,6 +46,6 @@ stages:
           inlineScript: |
              az storage blob upload --account-name $(myazurethingblob01 ) \
                                    --container-name $(myazurethingcontainer01) \
-                                   --name $(output.txt) \
-                                   --file $($(Build.ArtifactStagingDirectory)/output.zip) \
+                                   --name $(output) \
+                                   --file $(/home/vsts/work/1/a/output.zip) \
                                    --auth-mode login
