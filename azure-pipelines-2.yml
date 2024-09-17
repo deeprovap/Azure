@@ -38,11 +38,14 @@ stages:
         displayName: 'Archive output'
 
       # Step 6: Upload the file to Azure Blob Storage
-      - task: AzureFileCopy@4
+      - task: AzureCLI@2
         inputs:
-          SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'
           azureSubscription: 'Webapp connection'
-          Destination: 'AzureBlob'
-          storage: 'myazurethingblob01'
-          ContainerName: 'myazurethingcontainer01'
-        displayName: 'copying to Blob'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+             az storage blob upload --account-name $(myazurethingblob01 ) \
+                                   --container-name $(myazurethingcontainer01) \
+                                   --name $(output.txt) \
+                                   --file $($(Build.ArtifactStagingDirectory)/output.zip) \
+                                   --auth-mode login
