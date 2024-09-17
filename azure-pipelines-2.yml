@@ -38,7 +38,7 @@ stages:
         displayName: 'Archive output'
 
       # Step 6: Upload the file to Azure Blob Storage
-      - task: AzureFileCopy@6
+      - task: AzureFileCopy@4
         inputs:
           SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'
           azureSubscription: 'Webapp connection'
