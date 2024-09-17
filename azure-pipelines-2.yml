@@ -9,7 +9,7 @@ variables:
   storageAccountName: 'myazurethingblob01'  # Your Azure storage account name
   containerName: 'myazurethingcontainer01'  # Your Azure blob container name
   localPathToFile: '$(Build.ArtifactStagingDirectory)/output.zip'
-  blobName: 'output.txt'  # The path inside the blob container
+  blobName: 'output.zip'  # The path inside the blob container
 
 steps:
 - checkout: self
